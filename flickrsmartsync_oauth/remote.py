@@ -84,7 +84,8 @@ class Remote(object):
         # Create photo set if not found in remote map, else add photo to existing set
         if folder not in self.photo_sets_map:
             photosets_args = self.args.copy()
-            custom_title = self.get_custom_set_title(self.cmd_args.sync_path + folder)
+            #custom_title = self.get_custom_set_title(self.cmd_args.sync_path + folder)
+	    custom_title = self.get_custom_set_title(folder)
             photosets_args.update({'primary_photo_id': photo_id,
                                    'title': custom_title,
                                    'description': folder})
