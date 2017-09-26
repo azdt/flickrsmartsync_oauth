@@ -144,6 +144,9 @@ class Sync(object):
         # Iterate through the local photo set map and upload photos that do not exist in the remote map
         for photo_set in sorted(photo_sets):
             folder = photo_set.replace(self.cmd_args.sync_path, '')
+            logger.warning("folder = %s" % folder)
+            logger.warning("sync_path = %s" % self.cmd_args.sync_path)
+
             display_title = self.remote.get_custom_set_title(photo_set)
             logger.info('Getting photos in set [%s].' % display_title)
             photos = self.remote.get_photos_in_set(folder)

@@ -10,7 +10,7 @@ logger = logging.getLogger("flickrsmartsync_oauth")
 class Local(object):
     def __init__(self, cmd_args):
         self.cmd_args = cmd_args
-  
+
     def build_photo_sets(self, path, extensions):
         # Build local photo sets
         photo_sets = {} # Dictionary
@@ -46,10 +46,11 @@ class Local(object):
                                 logger.info('Skipped file [%s] because it does not match any keywords [%s].' % (file, list(keywords)))
                                 continue
 
-                        photo_sets.setdefault(os.path.basename(r), [])
+                        photo_sets.setdefault(r, [])
                         file_path = os.path.join(r, file)
                         file_stat = os.stat(file_path)
-                        photo_sets[os.path.basename(r)].append((file, file_stat))
+                        logger.info('appending %s to photo sets %s' % (file, r) )
+                        photo_sets[r].append((file, file_stat))
 
         if skips_root:
             logger.warning('Root photos are not synced to avoid disorganized flickr sets. Sync at the topmost level of your photos directory to avoid this warning.')

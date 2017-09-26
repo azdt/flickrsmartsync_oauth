@@ -7,6 +7,7 @@ import flickrapi
 import webbrowser
 import logging
 import config
+import tools
 
 logger = logging.getLogger("flickrsmartsync_oauth")
 
@@ -80,10 +81,11 @@ class Remote(object):
         # Always upload UNIX style
         if self.cmd_args.is_windows:
             folder = folder.replace(os.sep, '/')
-	custom_title = self.get_custom_set_title(folder)
 
+        custom_title = self.get_custom_set_title(folder)
+        folderbasename=os.path.basename(folder)
         # Create photo set if not found in remote map, else add photo to existing set
-        if folder not in self.photo_sets_map:
+        if folderbasename not in self.photo_sets_map:
             photosets_args = self.args.copy()
             #custom_title = self.get_custom_set_title(self.cmd_args.sync_path + folder)
 	    #custom_title = self.get_custom_set_title(folder)
@@ -91,14 +93,14 @@ class Remote(object):
                                    'title': custom_title,
                                    'description': custom_title})
             photo_set = json.loads(self.api.photosets_create(**photosets_args))
-            self.photo_sets_map[folder] = photo_set['photoset']['id']
+            self.photo_sets_map[folderbasename] = photo_set['photoset']['id']
             logger.info('Created set [%s] and added photo.' % custom_title)
         else:
             photosets_args = self.args.copy()
-            photosets_args.update({'photoset_id': self.photo_sets_map.get(folder), 'photo_id': photo_id})
+            photosets_args.update({'photoset_id': self.photo_sets_map.get(folderbasename), 'photo_id': photo_id})
             result = json.loads(self.api.photosets_addPhoto(**photosets_args))
             if result.get('stat') == 'ok':
-                logger.info('Added photo to set [%s].' % folder)
+                logger.info('Added photo to set [%s].' % custom_title)
             else:
                 logger.error(result)
 
@@ -112,11 +114,12 @@ class Remote(object):
         if self.cmd_args.is_windows:
             folder = folder.replace(os.sep, '/')
 
-        if folder in self.photo_sets_map:
+        folderbasename=os.path.basename(folder)
+        if folderbasename in self.photo_sets_map:
             photoset_args = self.args.copy()
             page = 1
             while True:
-                photoset_args.update({'photoset_id': self.photo_sets_map[folder], 'page': page})
+                photoset_args.update({'photoset_id': self.photo_sets_map[folderbasename], 'page': page})
                 if get_url:
                     photoset_args['extras'] = 'url_o,media'
                 page += 1
@@ -202,11 +205,12 @@ class Remote(object):
                         logger.info('Done.')
 
     def upload(self, file_path, photo, folder):
+        folderbasename=os.path.basename(folder)
         upload_args = {
             # (optional) Title of the photo
             'title': photo,
             # (optional) Description of the photo (may contain some limited HTML)
-            'description': folder,
+            'description': folderbasename,
             # (optional) Specify who can view the photo (set 0 for no, 1 for yes)
             'is_public': 0,
             'is_friend': 0,
@@ -223,7 +227,7 @@ class Remote(object):
             try:
                 upload = self.api.upload(file_path, None, **upload_args)
                 photo_id = upload.find('photoid').text
-                self.add_to_photo_set(photo_id, folder)
+                self.add_to_photo_set(photo_id, folderbasename)
                 return photo_id
             except Exception as e:
                 logger.warning("Retrying upload of [%s/%s] after error: [%s]." % (folder, photo, e))
