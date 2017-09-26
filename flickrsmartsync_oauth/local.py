@@ -46,7 +46,7 @@ class Local(object):
                                 logger.info('Skipped file [%s] because it does not match any keywords [%s].' % (file, list(keywords)))
                                 continue
 
-                        photo_sets.setdefault(r, [])
+                        photo_sets.setdefault(os.path.basename(r), [])
                         file_path = os.path.join(r, file)
                         file_stat = os.stat(file_path)
                         photo_sets[os.path.basename(r)].append((file, file_stat))
