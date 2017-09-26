@@ -88,7 +88,7 @@ class Remote(object):
 	    custom_title = self.get_custom_set_title(folder)
             photosets_args.update({'primary_photo_id': photo_id,
                                    'title': custom_title,
-                                   'description': folder})
+                                   'description': custom_title})
             photo_set = json.loads(self.api.photosets_create(**photosets_args))
             self.photo_sets_map[folder] = photo_set['photoset']['id']
             logger.info('Created set [%s] and added photo.' % custom_title)
