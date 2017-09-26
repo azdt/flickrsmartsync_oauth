@@ -31,6 +31,6 @@ def text_to_id(text):
     :rtype: String.
     """
     text = strip_accents(text.lower())
-    text = re.sub('[ ]+', '_', text)
+    # text = re.sub('[ ]+', '_', text)
     text = re.sub('[^0-9a-zA-Z_-]', '', text)
     return text
