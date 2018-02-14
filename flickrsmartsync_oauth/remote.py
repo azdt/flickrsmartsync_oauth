@@ -38,7 +38,7 @@ class Remote(object):
         # Authentication
         if not self.api.token_valid(perms=u'delete'):
             print('Authenticating...')
-        try:
+        #try:
             self.api.authenticate_via_browser(perms=u'delete')
             """
             # Get a request token
@@ -56,9 +56,9 @@ class Remote(object):
             # added unicode()
             self.api.get_access_token(unicode(verifier))
             """
-        except:
-            logger.error('Authentication is required.')
-            exit(0)
+        #except:
+            #logger.error('Authentication is required.')
+            #exit(0)
 
     # Custom set builder
     def get_custom_set_title(self, path):
