@@ -38,7 +38,7 @@ class Remote(object):
         # Authentication
         if not self.api.token_valid(perms=u'delete'):
             print('Authenticating...')
-        try:
+        #try:
             #self.api.authenticate_via_browser(perms=u'delete')
             
             # Get a request token
@@ -48,7 +48,7 @@ class Remote(object):
             # Open a browser at the authentication URL.
             authorize_url = self.api.auth_url(perms=u'delete')
             print ("auth URL : " + authorize_url)
-            #webbrowser.open_new_tab(authorize_url)
+            webbrowser.open_new_tab(authorize_url)
 
             # Get the verifier code from the user.
             verifier = str(raw_input('Please enter verfication code: '))
@@ -58,9 +58,9 @@ class Remote(object):
             self.api.get_access_token(unicode(verifier))
             print ("OK !")
             
-        except:
-            logger.error('Authentication is required.')
-            exit(0)
+        #except:
+            #logger.error('Authentication is required.')
+            #exit(0)
 
     # Custom set builder
     def get_custom_set_title(self, path):
